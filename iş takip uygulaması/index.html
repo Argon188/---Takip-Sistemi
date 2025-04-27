@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>İş Takip ve Yönetim Sistemi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 32px;
+        }
+
+        .forms-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 1000px;
+            justify-content: center;
+        }
+
+        .form-section {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 300px;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        input, select, button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            margin-top: 20px;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .projects-section {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .project-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fafafa;
+        }
+
+        .task {
+            margin-left: 20px;
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #f1f1f1;
+            border-radius: 6px;
+        }
+
+        .task button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #28a745;
+        }
+
+        .task button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>İş Takip ve Yönetim Sistemi</h1>
+
+    <div class="forms-container">
+        <section class="form-section">
+            <h2>Proje Oluştur</h2>
+            <input type="text" id="projectName" placeholder="Proje Adı">
+            <input type="date" id="startDate">
+            <input type="date" id="endDate">
+            <button onclick="createProject()">Proje Ekle</button>
+        </section>
+
+        <section class="form-section">
+            <h2>Görev Ekle</h2>
+            <input type="text" id="taskName" placeholder="Görev Adı">
+            <input type="text" id="employeeName" placeholder="Çalışan Adı">
+            <select id="projectSelect">
+                <option value="">Proje Seç</option>
+            </select>
+            <button onclick="addTask()">Görev Ekle</button>
+        </section>
+    </div>
+
+    <section class="projects-section">
+        <h2>Projeler ve Görevler</h2>
+        <div id="projectsList"></div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

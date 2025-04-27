@@ -1,0 +1,119 @@
+class Calisan { // Çalışanları temsil eden sınıf
+    constructor(ad) { // Çalışanın adını alır
+        this.ad = ad; // Çalışanın adı özelliğe atanır
+    }
+}
+
+class Gorev { // Görevleri temsil eden sınıf
+    constructor(ad, calisan) { // Görev adı ve çalışanın bilgisini alır
+        this.ad = ad; // Görev adı atanır
+        this.calisan = calisan; // Görevle ilişkili çalışan atanır
+        this.durum = "Başlanmadı"; // Görevin başlangıç durumu
+    }
+
+    ilerlemeKaydet() { // Görev ilerleme fonksiyonu
+        if (this.durum === "Başlanmadı") { // Eğer görev başlanmadıysa
+            this.durum = "Devam Ediyor"; // Durumu "Devam Ediyor" yap
+        } else if (this.durum === "Devam Ediyor") { // Eğer görev devam ediyorsa
+            this.durum = "Tamamlandı"; // Durumu "Tamamlandı" yap
+        }
+    }
+}
+
+class Proje { // Projeleri temsil eden sınıf
+    constructor(ad, baslangic, bitis) { // Proje adı, başlangıç ve bitiş tarihlerini alır
+        this.ad = ad; // Proje adı atanır
+        this.baslangic = baslangic; // Proje başlangıç tarihi atanır
+        this.bitis = bitis; // Proje bitiş tarihi atanır
+        this.gorevler = []; // Projede yer alacak görevleri tutan boş bir dizi
+    }
+
+    gorevEkle(gorev) { // Projeye yeni görev ekleme fonksiyonu
+        this.gorevler.push(gorev); // Görevi projedeki görevler dizisine ekler
+    }
+}
+
+// Verileri saklamak için diziler
+let projeler = []; // Tüm projeleri saklayacağımız ana dizi
+
+function createProject() { // Yeni proje oluşturma fonksiyonu
+    const name = document.getElementById('projectName').value; // Proje adını inputtan alır
+    const start = document.getElementById('startDate').value; // Başlangıç tarihini inputtan alır
+    const end = document.getElementById('endDate').value; // Bitiş tarihini inputtan alır
+
+    if (name && start && end) { // Eğer tüm alanlar doluysa
+        const proje = new Proje(name, start, end); // Yeni bir proje nesnesi oluşturur
+        projeler.push(proje); // Yeni projeyi projeler dizisine ekler
+        updateProjectSelect(); // Proje seçimi dropdown'ını günceller
+        displayProjects(); // Projeleri ekranda gösterir
+        clearProjectForm(); // Proje formunu temizler
+    } else { // Eğer alanlardan biri boşsa
+        alert("Lütfen tüm alanları doldurun!"); // Uyarı verir
+    }
+}
+
+function addTask() { // Yeni görev ekleme fonksiyonu
+    const taskName = document.getElementById('taskName').value; // Görev adını inputtan alır
+    const employeeName = document.getElementById('employeeName').value; // Çalışan adını inputtan alır
+    const projectIndex = document.getElementById('projectSelect').value; // Seçilen projenin indeksini alır
+
+    if (taskName && employeeName && projectIndex !== "") { // Eğer tüm alanlar doluysa
+        const calisan = new Calisan(employeeName); // Yeni çalışan nesnesi oluşturur
+        const gorev = new Gorev(taskName, calisan); // Yeni görev nesnesi oluşturur
+        projeler[projectIndex].gorevEkle(gorev); // Seçilen projeye görevi ekler
+        displayProjects(); // Projeleri tekrar ekranda gösterir
+        clearTaskForm(); // Görev formunu temizler
+    } else { // Eğer alanlardan biri boşsa
+        alert("Lütfen tüm alanları doldurun!"); // Uyarı verir
+    }
+}
+
+function updateProjectSelect() { // Proje seçimi dropdown'ını güncelleyen fonksiyon
+    const select = document.getElementById('projectSelect'); // Seçim kutusunu alır
+    select.innerHTML = ""; // Seçim kutusunu temizler
+    projeler.forEach((proje, index) => { // Tüm projeleri dolaşır
+        const option = document.createElement('option'); // Yeni bir <option> elementi oluşturur
+        option.value = index; // Option'ın değeri proje dizisindeki indeks olur
+        option.textContent = proje.ad; // Option'ın görünen metni proje adı olur
+        select.appendChild(option); // Option'ı seçim kutusuna ekler
+    });
+}
+
+function displayProjects() { // Projeleri ve görevleri ekranda gösteren fonksiyon
+    const projectsDiv = document.getElementById('projectsList'); // Projeleri listeleyeceğimiz div'i alır
+    projectsDiv.innerHTML = ""; // Önceki içeriği temizler
+
+    projeler.forEach((proje, projeIndex) => { // Tüm projeleri dolaşır
+        const projectCard = document.createElement('div'); // Yeni bir proje kartı oluşturur
+        projectCard.className = "project-card"; // CSS sınıfı ekler
+        projectCard.innerHTML = `<h3>${proje.ad}</h3> 
+                                 <p>Başlangıç: ${proje.baslangic} - Bitiş: ${proje.bitis}</p>`; // Proje bilgilerini ekler
+
+        proje.gorevler.forEach((gorev, gorevIndex) => { // Projeye bağlı görevleri dolaşır
+            const taskDiv = document.createElement('div'); // Yeni bir görev kutusu oluşturur
+            taskDiv.className = "task"; // CSS sınıfı ekler
+            taskDiv.innerHTML = `<strong>${gorev.ad}</strong> - ${gorev.calisan.ad} - Durum: ${gorev.durum}
+            <button onclick="updateTask(${projeIndex}, ${gorevIndex})">İlerleme Kaydet</button>`; // Görev adı, çalışan adı ve durum bilgisi + ilerletme butonu ekler
+            projectCard.appendChild(taskDiv); // Görev kutusunu proje kartına ekler
+        });
+
+        projectsDiv.appendChild(projectCard); // Proje kartını ana div'e ekler
+    });
+}
+
+function updateTask(projeIndex, gorevIndex) { // Belirli bir görevin durumunu ilerleten fonksiyon
+    const gorev = projeler[projeIndex].gorevler[gorevIndex]; // İlgili görevi bulur
+    gorev.ilerlemeKaydet(); // Görevin ilerleme fonksiyonunu çağırır
+    displayProjects(); // Ekranı güncelleyerek değişikliği gösterir
+}
+
+function clearProjectForm() { // Proje ekleme formunu temizleyen fonksiyon
+    document.getElementById('projectName').value = ""; // Proje adı inputunu temizler
+    document.getElementById('startDate').value = ""; // Başlangıç tarihi inputunu temizler
+    document.getElementById('endDate').value = ""; // Bitiş tarihi inputunu temizler
+}
+
+function clearTaskForm() { // Görev ekleme formunu temizleyen fonksiyon
+    document.getElementById('taskName').value = ""; // Görev adı inputunu temizler
+    document.getElementById('employeeName').value = ""; // Çalışan adı inputunu temizler
+}
